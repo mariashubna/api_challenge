@@ -1,7 +1,7 @@
 import sequelize from "./sequelize.js";
-import "./Users.js";
-import "./Challenge.js";
-import "./Invites.js";
+import User from "./Users.js";
+import Challenge from "./Challenge.js";
+import Invite from "./Invites.js";
 
 export async function initDb() {
   await sequelize.authenticate();
