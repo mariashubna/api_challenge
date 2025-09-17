@@ -7,7 +7,7 @@ import {
   refreshSchema,
 } from "../schemas/authSchema.js";
 
-import validate from "../helpers/validateBody.js";
+import validate from "../middlewares/validate.js";
 
 import authenticate from "../middlewares/authenticate.js";
 

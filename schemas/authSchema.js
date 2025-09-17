@@ -15,3 +15,7 @@ export const classicLoginSchema = Joi.object({
 export const appleLoginSchema = Joi.object({
   appleToken: Joi.string().required(),
 });
+
+export const refreshSchema = Joi.object({
+  refreshToken: Joi.string().required(),
+});

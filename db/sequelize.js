@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize";
+
 const sequelize = new Sequelize({
   dialect: process.env.DATABASE_DIALECT,
   host: process.env.DATABASE_HOST,
@@ -12,6 +13,7 @@ const sequelize = new Sequelize({
 });
 try {
   await sequelize.authenticate();
+  await sequelize.sync({ alter: true });
   console.log("Database connection successful");
 } catch (err) {
   console.log("Failed connect database");
