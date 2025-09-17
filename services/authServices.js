@@ -32,7 +32,8 @@ export const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ where: { email } });
   if (!user || !user.password) throw HttpError(401, "Invalid credentials");
 
-  const match = await bcrypt.compare(password, user.password);
+  // const match = await bcrypt.compare(password, user.password);
+  const match = password === user.password;
   if (!match) throw HttpError(401, "Invalid credentials");
 
   const payload = { id: user.id, role: user.roles };
