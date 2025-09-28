@@ -18,22 +18,46 @@ function getAppleKey(header, callback) {
   });
 }
 
-// ===== Classic Register/Login =====
-export const registerUser = async ({ email, password }) => {
-  const existingUser = await User.findOne({ where: { email } });
-  if (existingUser) throw HttpError(409, "Email already in use");
+export const findUser = (query) =>
+  User.findOne({
+    where: query,
+  });
 
-  const hashPassword = password ? await bcrypt.hash(password, 10) : null;
-  const newUser = await User.create({ email, password: hashPassword });
-  return newUser;
+// ===== Classic Register/Login =====
+export const registerUser = async (payload) => {
+  const { email, password, name } = payload;
+
+  const existingUser = await findUser({ email });
+  if (existingUser) {
+    throw HttpError(409, "Email in use");
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // всегда регистрируем только с ролью "user"
+  const newUser = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+    roles: "user",
+  });
+
+  const payloadForToken = { id: newUser.id, role: newUser.roles };
+  const token = createToken(payloadForToken);
+  const refreshToken = createRefreshToken(payloadForToken);
+
+  newUser.token = token;
+  newUser.refreshToken = refreshToken;
+  await newUser.save();
+
+  return { token, refreshToken, user: newUser };
 };
 
 export const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ where: { email } });
   if (!user || !user.password) throw HttpError(401, "Invalid credentials");
 
-  // const match = await bcrypt.compare(password, user.password);
-  const match = password === user.password;
+  const match = await bcrypt.compare(password, user.password);
   if (!match) throw HttpError(401, "Invalid credentials");
 
   const payload = { id: user.id, role: user.roles };
@@ -53,7 +77,8 @@ export const logoutUser = async (user) => {
   await user.save();
 };
 
-export const refreshUser = async (userId) => {
+// вспомогательная функция — получить юзера по id
+export const getUserById = async (userId) => {
   const user = await User.findByPk(userId);
   if (!user) throw HttpError(404, "User not found");
   return user;
@@ -76,6 +101,7 @@ export const loginWithApple = async (appleToken) => {
           user = await User.create({
             email: email || `${appleId}@appleuser.com`,
             appleId,
+            roles: "user", // всегда "user"
           });
         }
 
@@ -93,6 +119,7 @@ export const loginWithApple = async (appleToken) => {
   });
 };
 
+// ===== Refresh Tokens =====
 export const refreshTokens = async (refreshToken) => {
   if (!refreshToken) throw HttpError(401, "Not authorized");
 
@@ -109,10 +136,5 @@ export const refreshTokens = async (refreshToken) => {
   user.refreshToken = newRefreshToken;
   await user.save();
 
-  return { token: newToken, refreshToken: newRefreshToken };
-};
-
-// ===== Find User =====
-export const findUser = async (query) => {
-  return await User.findOne({ where: query });
+  return { token: newToken, refreshToken: newRefreshToken, user };
 };

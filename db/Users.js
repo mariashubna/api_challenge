@@ -30,6 +30,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       defaultValue: null,
     },
+    refreshToken: {
+      type: DataTypes.STRING,
+      defaultValue: null,
+    },
   },
   { tableName: "users" }
 );
