@@ -5,7 +5,7 @@ import morgan from "morgan";
 import cors from "cors";
 import "./db/sequelize.js";
 import { initDb } from "./db/init.js";
-
+import { specs, swaggerUi } from "./swagger.js";
 // import contactsRouter from "./routes/contactsRouter.js";
 import authRouter from "./routes/authRouter.js";
 // import { resolve } from "path";
@@ -19,6 +19,7 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 // app.use("/api/contacts", contactsRouter);
 app.use(express.static("public"));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });

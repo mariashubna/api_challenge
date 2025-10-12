@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-import sequelize from "./sequelize.js";
-import { emailRegexp, passRegexp } from "../constants/auth.js";
+import sequelize from "../sequelize.js";
+import { emailRegexp, passRegexp } from "../../constants/auth.js";
 
 const User = sequelize.define(
   "User",
@@ -26,14 +26,8 @@ const User = sequelize.define(
       defaultValue: "user",
       allowNull: false,
     },
-    token: {
-      type: DataTypes.STRING,
-      defaultValue: null,
-    },
-    refreshToken: {
-      type: DataTypes.STRING,
-      defaultValue: null,
-    },
+    token: { type: DataTypes.STRING, defaultValue: null },
+    refreshToken: { type: DataTypes.STRING, defaultValue: null },
   },
   { tableName: "users" }
 );

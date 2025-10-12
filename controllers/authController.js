@@ -16,7 +16,6 @@ const registerController = async (req, res) => {
     user: {
       id: user.id,
       email: user.email,
-      name: user.name,
       roles: user.roles,
     },
   });
@@ -30,7 +29,6 @@ const loginController = async (req, res) => {
     user: {
       id: user.id,
       email: user.email,
-      name: user.name,
       roles: user.roles,
     },
   });
@@ -42,8 +40,8 @@ const logoutController = async (req, res) => {
 };
 
 const getCurrentController = async (req, res) => {
-  const { id, email, name, roles } = req.user;
-  res.json({ id, email, name, roles });
+  const { id, email, roles } = req.user;
+  res.json({ id, email, roles });
 };
 
 // ===== Apple Login =====
@@ -56,7 +54,6 @@ const appleLoginController = async (req, res) => {
     user: {
       id: user.id,
       email: user.email,
-      name: user.name,
       roles: user.roles,
     },
   });
@@ -75,7 +72,6 @@ const refreshController = async (req, res) => {
     user: {
       id: user.id,
       email: user.email,
-      name: user.name,
       roles: user.roles,
     },
   });

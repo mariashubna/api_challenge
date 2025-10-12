@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
-import User from "../db/Users.js";
+import User from "../db/models/Users.js";
 import HttpError from "../helpers/HttpError.js";
 import {
   createToken,
@@ -25,7 +25,7 @@ export const findUser = (query) =>
 
 // ===== Classic Register/Login =====
 export const registerUser = async (payload) => {
-  const { email, password, name } = payload;
+  const { email, password } = payload;
 
   const existingUser = await findUser({ email });
   if (existingUser) {
@@ -36,7 +36,6 @@ export const registerUser = async (payload) => {
 
   // всегда регистрируем только с ролью "user"
   const newUser = await User.create({
-    name,
     email,
     password: hashedPassword,
     roles: "user",

@@ -11,14 +11,5 @@ const sequelize = new Sequelize({
     ssl: true,
   },
 });
-try {
-  await sequelize.authenticate();
-  await sequelize.sync({ alter: true });
-  console.log("Database connection successful");
-} catch (err) {
-  console.log("Failed connect database");
-  console.log(err);
-  process.exit(1);
-}
 
 export default sequelize;
