@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { generateTokens } from "../helpers/jwt.js";
 import jwksClient from "jwks-rsa";
 import User from "../db/models/Users.js";
 import HttpError from "../helpers/HttpError.js";
@@ -136,4 +137,28 @@ export const refreshTokens = async (refreshToken) => {
   await user.save();
 
   return { token: newToken, refreshToken: newRefreshToken, user };
+};
+
+// ==============Register Admin =========================
+export const registerAdmin = async ({ email, password }) => {
+  const existingUser = await User.findOne({ where: { email } });
+  if (existingUser) {
+    throw HttpError(409, "Email already in use");
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await User.create({
+    email,
+    password: hashedPassword,
+    roles: "admin",
+  });
+
+  const { token, refreshToken } = generateTokens(user);
+
+  user.token = token;
+  user.refreshToken = refreshToken;
+  await user.save();
+
+  return { token, refreshToken, user };
 };

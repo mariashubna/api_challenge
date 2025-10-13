@@ -56,3 +56,23 @@ export const deleteChallenge = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+export const getCompletedChallenges = async (req, res, next) => {
+  try {
+    const challenges = await challengeService.getCompletedChallenges(
+      req.user.id
+    );
+    res.json(challenges);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getPendingChallenges = async (req, res, next) => {
+  try {
+    const challenges = await challengeService.getPendingChallenges(req.user.id);
+    res.json(challenges);
+  } catch (err) {
+    next(err);
+  }
+};

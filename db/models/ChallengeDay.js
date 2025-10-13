@@ -5,7 +5,7 @@ const ChallengeDay = sequelize.define(
   "ChallengeDay",
   {
     date: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-    isCompleted: { type: DataTypes.BOOLEAN, defaultValue: false },
+    isFinished: { type: DataTypes.BOOLEAN, defaultValue: false },
     note: { type: DataTypes.STRING, defaultValue: "" },
     feeling: { type: DataTypes.INTEGER, defaultValue: 3 },
     goalValue: { type: DataTypes.DOUBLE, defaultValue: 0 },

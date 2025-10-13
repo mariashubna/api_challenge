@@ -6,6 +6,7 @@ import {
   appleLoginSchema,
   refreshSchema,
 } from "../schemas/authSchema.js";
+import checkRole from "../middlewares/checkRole.js";
 
 import validate from "../middlewares/validate.js";
 
@@ -40,6 +41,14 @@ router.post(
   authController.refreshController
 );
 
+router.post(
+  "/register-admin",
+  authenticate,
+  checkRole("superAdmin"),
+  validate(classicRegisterSchema),
+  authController.registerAdminController
+);
+
 export default router;
 
 /**
@@ -51,7 +60,7 @@ export default router;
 
 /**
  * @swagger
- * /register:
+ * /auth/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Auth]
@@ -105,7 +114,7 @@ export default router;
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Login a user
  *     tags: [Auth]
@@ -156,10 +165,71 @@ export default router;
  *                 message:
  *                   type: string
  */
-
 /**
  * @swagger
- * /refresh:
+ * /auth/register-admin:
+ *   post:
+ *     summary: Register a new administrator (SuperAdmin only)
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []   # Требуется JWT токен супер-админа
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: admin@example.com
+ *               password:
+ *                 type: string
+ *                 example: StrongPass123!
+ *     responses:
+ *       201:
+ *         description: Administrator registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 refreshToken:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     email:
+ *                       type: string
+ *                     roles:
+ *                       type: string
+ *                       example: admin
+ *       403:
+ *         description: Only SuperAdmin can register new admins
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Access denied. SuperAdmin only.
+ *       409:
+ *         description: Email already in use
+ *       401:
+ *         description: Not authorized
+ *
+ */
+/**
+ * @swagger
+ * /auth/refresh:
  *   post:
  *     summary: Refresh access token
  *     tags: [Auth]
@@ -209,7 +279,7 @@ export default router;
 
 /**
  * @swagger
- * /apple:
+ * /auth/apple:
  *   post:
  *     summary: Login with Apple
  *     tags: [Auth]
@@ -259,7 +329,7 @@ export default router;
 
 /**
  * @swagger
- * /logout:
+ * /auth/logout:
  *   post:
  *     summary: Logout user
  *     tags: [Auth]

@@ -8,6 +8,9 @@ import { initDb } from "./db/init.js";
 import { specs, swaggerUi } from "./swagger.js";
 // import contactsRouter from "./routes/contactsRouter.js";
 import authRouter from "./routes/authRouter.js";
+import challengeRouter from "./routes/challengeRoutes.js";
+import userRouter from "./routes/userRoutes.js";
+import complaintRoutes from "./routes/complaintRoutes.js";
 // import { resolve } from "path";
 
 const app = express();
@@ -17,7 +20,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
-// app.use("/api/contacts", contactsRouter);
+app.use("/api/challenges", challengeRouter);
+app.use("/api/users", userRouter);
+app.use("/api/complaints", complaintRoutes);
 app.use(express.static("public"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 

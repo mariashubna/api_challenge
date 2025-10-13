@@ -12,9 +12,7 @@ const options = {
       description:
         "API for mobile app and admin panel: authentication, challenges, invites, friends, and statistics",
     },
-    servers: [
-      { url: `${BASE_URL}/api` }, // универсальный префикс для всех роутов
-    ],
+    servers: [{ url: `${BASE_URL}/api` }],
     components: {
       securitySchemes: {
         bearerAuth: {

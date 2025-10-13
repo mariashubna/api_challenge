@@ -14,7 +14,6 @@ export async function initDb() {
     // Опционально синхронизируем модели
     if (process.env.SYNC_DB === "true") {
       await sequelize.sync({ alter: true });
-      // await sequelize.sync({ alter: true });
       console.log("All models synchronized successfully");
     }
   } catch (err) {

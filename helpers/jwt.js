@@ -33,3 +33,10 @@ export const verifyRefreshToken = (token) => {
     return { error };
   }
 };
+
+export const generateTokens = (user) => {
+  const payload = { id: user.id, role: user.roles };
+  const token = createToken(payload);
+  const refreshToken = createRefreshToken(payload);
+  return { token, refreshToken };
+};

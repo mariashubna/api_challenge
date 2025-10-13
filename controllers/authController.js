@@ -6,6 +6,22 @@ import {
   refreshTokens,
   loginWithApple,
 } from "../services/authServices.js";
+import { registerAdmin } from "../services/authServices.js";
+
+// =================== Admin register =======================
+
+const registerAdminController = async (req, res) => {
+  const { token, refreshToken, user } = await registerAdmin(req.body);
+  res.status(201).json({
+    token,
+    refreshToken,
+    user: {
+      id: user.id,
+      email: user.email,
+      roles: user.roles,
+    },
+  });
+};
 
 // ===== Classic register/login =====
 const registerController = async (req, res) => {
@@ -84,4 +100,5 @@ export default {
   getCurrentController: ctrlWrapper(getCurrentController),
   appleLoginController: ctrlWrapper(appleLoginController),
   refreshController: ctrlWrapper(refreshController),
+  registerAdminController: ctrlWrapper(registerAdminController),
 };
