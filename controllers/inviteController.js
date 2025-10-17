@@ -22,14 +22,28 @@ export const getUserInvites = async (req, res) => {
   }
 };
 
-export const respondToInvite = async (req, res) => {
+export const getSentInvites = async (req, res) => {
   try {
-    const invite = await inviteService.respondToInvite(
-      req.params.id,
-      req.user.id,
-      req.body.status
-    );
+    const invites = await inviteService.getSentInvites(req.user.id);
+    res.json(invites);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+export const acceptInvite = async (req, res) => {
+  try {
+    const invite = await inviteService.acceptInvite(req.params.id, req.user.id);
     res.json(invite);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+export const deleteInvite = async (req, res) => {
+  try {
+    const result = await inviteService.deleteInvite(req.params.id, req.user.id);
+    res.json(result);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

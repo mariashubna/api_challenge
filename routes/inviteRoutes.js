@@ -1,6 +1,6 @@
 import express from "express";
 import * as inviteController from "../controllers/inviteController.js";
-import authMiddleware from "../middleware/auth.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const router = express.Router();
 
@@ -35,7 +35,7 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.post("/", authMiddleware, inviteController.sendInvite);
+router.post("/", authenticate, inviteController.sendInvite);
 
 /**
  * @swagger
@@ -52,6 +52,83 @@ router.post("/", authMiddleware, inviteController.sendInvite);
  *       401:
  *         description: Unauthorized
  */
-router.get("/", authMiddleware, inviteController.getUserInvites);
+router.get("/", authenticate, inviteController.getUserInvites);
+
+/**
+ * @swagger
+ * /invites/sent:
+ *   get:
+ *     summary: Get sent invites
+ *     tags:
+ *       - Invites
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of sent invites
+ *       401:
+ *         description: Unauthorized
+ */
+
+// Просмотр отправленных приглашений
+router.get("/sent", authenticate, inviteController.getSentInvites);
+
+/**
+ * @swagger
+ * /invites/{id}/accept:
+ *   patch:
+ *     summary: Accept an invite
+ *     tags:
+ *       - Invites
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the invite
+ *     responses:
+ *       200:
+ *         description: Invite accepted
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Invite not found
+ */
+
+// Принять приглашение
+router.patch("/:id/accept", authenticate, inviteController.acceptInvite);
+
+/**
+ * @swagger
+ * /invites/{id}:
+ *   delete:
+ *     summary: Delete an invite
+ *     tags:
+ *       - Invites
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the invite
+ *     responses:
+ *       200:
+ *         description: Invite deleted
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Invite not found
+ */
+
+// Удалить приглашение
+router.delete("/:id", authenticate, inviteController.deleteInvite);
 
 export default router;

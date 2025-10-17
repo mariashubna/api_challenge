@@ -6,11 +6,13 @@ import cors from "cors";
 import "./db/sequelize.js";
 import { initDb } from "./db/init.js";
 import { specs, swaggerUi } from "./swagger.js";
-// import contactsRouter from "./routes/contactsRouter.js";
+import friendsRoutes from "./routes/friendRoutes.js";
 import authRouter from "./routes/authRouter.js";
 import challengeRouter from "./routes/challengeRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import complaintRoutes from "./routes/complaintRoutes.js";
+import invitesRoutes from "./routes/inviteRoutes.js";
+import statsRoutes from "./routes/statsRoutes.js";
 // import { resolve } from "path";
 
 const app = express();
@@ -23,6 +25,9 @@ app.use("/api/auth", authRouter);
 app.use("/api/challenges", challengeRouter);
 app.use("/api/users", userRouter);
 app.use("/api/complaints", complaintRoutes);
+app.use("/api/friends", friendsRoutes);
+app.use("/api/invites", invitesRoutes);
+app.use("/api/stats", statsRoutes);
 app.use(express.static("public"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 

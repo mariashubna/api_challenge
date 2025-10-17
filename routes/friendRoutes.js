@@ -1,12 +1,12 @@
 import express from "express";
 import * as friendController from "../controllers/friendController.js";
-import authMiddleware from "../middleware/auth.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const router = express.Router();
 
 /**
  * @swagger
- * /friends:
+ * /friends/requests:
  *   post:
  *     summary: Send a friend request
  *     tags:
@@ -32,7 +32,7 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.post("/", authMiddleware, friendController.sendFriendRequest);
+router.post("/requests", authenticate, friendController.sendFriendRequest);
 
 /**
  * @swagger
@@ -49,6 +49,132 @@ router.post("/", authMiddleware, friendController.sendFriendRequest);
  *       401:
  *         description: Unauthorized
  */
-router.get("/", authMiddleware, friendController.getFriends);
+router.get("/", authenticate, friendController.getFriends);
+
+/**
+ * @swagger
+ * /friends/requests/received:
+ *   get:
+ *     summary: Get received friend requests
+ *     tags:
+ *       - Friends
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of received friend requests
+ *       401:
+ *         description: Unauthorized
+ */
+router.get(
+  "/requests/received",
+  authenticate,
+  friendController.getReceivedRequests
+);
+
+/**
+ * @swagger
+ * /friends/requests/sent:
+ *   get:
+ *     summary: Get sent friend requests
+ *     tags:
+ *       - Friends
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of sent friend requests
+ *       401:
+ *         description: Unauthorized
+ */
+router.get("/requests/sent", authenticate, friendController.getSentRequests);
+
+/**
+ * @swagger
+ * /friends/requests/{id}/accept:
+ *   patch:
+ *     summary: Accept a friend request
+ *     tags:
+ *       - Friends
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the friend request
+ *     responses:
+ *       200:
+ *         description: Friend request accepted
+ *       400:
+ *         description: Invalid request
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Friend request not found
+ */
+router.patch(
+  "/requests/:id/accept",
+  authenticate,
+  friendController.acceptFriendRequest
+);
+
+/**
+ * @swagger
+ * /friends/requests/{id}/reject:
+ *   patch:
+ *     summary: Reject a friend request
+ *     tags:
+ *       - Friends
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the friend request
+ *     responses:
+ *       200:
+ *         description: Friend request rejected
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Friend request not found
+ */
+router.patch(
+  "/requests/:id/reject",
+  authenticate,
+  friendController.rejectFriendRequest
+);
+
+/**
+ * @swagger
+ * /friends/{id}:
+ *   delete:
+ *     summary: Remove a friend
+ *     tags:
+ *       - Friends
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the friend to remove
+ *     responses:
+ *       200:
+ *         description: Friend removed
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Friend not found
+ */
+router.delete("/:id", authenticate, friendController.removeFriend);
 
 export default router;

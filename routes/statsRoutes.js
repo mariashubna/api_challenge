@@ -1,6 +1,6 @@
 import express from "express";
 import * as statsController from "../controllers/statsController.js";
-import authMiddleware from "../middleware/auth.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const router = express.Router();
 
@@ -43,6 +43,6 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/", authMiddleware, statsController.getUserStats);
+router.get("/", authenticate, statsController.getUserStats);
 
 export default router;
